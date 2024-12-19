@@ -13,6 +13,7 @@ class KataCalculator
   def parse_input
     find_delimiters
     get_number_array
+    check_numbers_are_positive
   end
 
   def get_number_array
@@ -31,6 +32,13 @@ class KataCalculator
     if @input.start_with?("//")
       matchers = @input[2..].split("\n", 2)
       @delimiters << matchers[0] unless matchers.nil?
+    end
+  end
+
+  def check_numbers_are_positive
+    if @numbers.any?(&:negative?)
+      negative_numbers = @numbers.select(&:negative?).map(&:to_s).join(",")
+      raise "negative numbers not allowed #{negative_numbers}"
     end
   end
 end
@@ -74,5 +82,13 @@ describe 'KataCalculator' do
       expect(@calculator.add("//;\n1,2;3")).to eql(6)
       expect(@calculator.add("//;\n1,2;3,5")).to eql(11)
     end
+
+    # Test to check if error is thrown for negative number
+    it "should raise an exception if any operand is negative" do
+      expect{@calculator.add("-3")}.to raise_error(RuntimeError, "negative numbers not allowed -3")
+      expect{@calculator.add("-3, -5")}.to raise_error(RuntimeError, "negative numbers not allowed -3,-5")
+      expect{@calculator.add("//;\n-1,2;-3")}.to raise_error(RuntimeError, "negative numbers not allowed -1,-3")
+    end
+
   end
 end
