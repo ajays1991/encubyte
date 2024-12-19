@@ -2,6 +2,7 @@ class KataCalculator
     
   def add(input)
     return 0 if input == ''
+    return input.to_i
   end 
 end
 
@@ -18,7 +19,12 @@ describe 'KataCalculator' do
 
     # Test to Handle Empty String
     it "should return 0 with an empty string" do
-      @calculator.add("").should == 0
+      expect(@calculator.add("")).to eql(0)
+    end
+
+    # Test to handle single number
+    it "should return the number with a number" do
+      expect(@calculator.add("5")).to eql(5)
     end
   end
 end
