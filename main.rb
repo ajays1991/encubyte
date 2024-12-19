@@ -1,10 +1,13 @@
 require 'byebug'
 class KataCalculator
+
+  CUSTOM_DELIMITER_REGEXP = Regexp.new("\/\/(\\D)\\n")
+  CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\\[(.*?)\\]")
     
   def add(input)
     return 0 if input == ''
     @input = input
-    @delimiters = [",", "\n"]
+    @delimiters = [",","\n"]
     parse_input
     return sum
   end
@@ -30,9 +33,8 @@ class KataCalculator
   end
 
   def find_delimiters
-    if @input.start_with?("//")
-      matchers = @input[2..].split("\n", 2)
-      @delimiters << matchers[0] unless matchers.nil?
+    if matches = (@input.match(CUSTOM_DELIMITER_REGEXP) || @input.match(CUSTOM_LONG_DELIMITER_REGEXP))
+      @delimiters << matches[1]
     end
   end
 
@@ -99,6 +101,11 @@ describe 'KataCalculator' do
     it "should ignore numbers bigger than 1000" do
       expect(@calculator.add("1,2,3,1001,2000")).to eql(6)
       expect(@calculator.add("//;\n1,2;3,5000")).to eql(6)
+    end
+
+    # Test to check sum with delimiters of any length
+    it "should allow delimiters with any length" do
+      expect(@calculator.add("//[***]\n1***2***3")).to eql(6)
     end
   end
 end
