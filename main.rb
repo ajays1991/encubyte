@@ -14,6 +14,7 @@ class KataCalculator
     find_delimiters
     get_number_array
     check_numbers_are_positive
+    remove_numbers_greater_than
   end
 
   def get_number_array
@@ -40,6 +41,10 @@ class KataCalculator
       negative_numbers = @numbers.select(&:negative?).map(&:to_s).join(",")
       raise "negative numbers not allowed #{negative_numbers}"
     end
+  end
+
+  def remove_numbers_greater_than
+    @numbers.delete_if{|num| num > 1000}
   end
 end
 
@@ -90,5 +95,10 @@ describe 'KataCalculator' do
       expect{@calculator.add("//;\n-1,2;-3")}.to raise_error(RuntimeError, "negative numbers not allowed -1,-3")
     end
 
+    # Test to check removal of numbers greater than 1000
+    it "should ignore numbers bigger than 1000" do
+      expect(@calculator.add("1,2,3,1001,2000")).to eql(6)
+      expect(@calculator.add("//;\n1,2;3,5000")).to eql(6)
+    end
   end
 end
