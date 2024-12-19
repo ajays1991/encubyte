@@ -4,6 +4,7 @@ class KataCalculator
   def add(input)
     return 0 if input == ''
     @input = input
+    @delimiters = [",", "\n"]
     parse_input
     return sum
   end
@@ -14,11 +15,15 @@ class KataCalculator
   end
 
   def get_number_array
-    @numbers = @input.split(",").map(&:to_i)
+    @numbers = @input.split(regexp_for_input).collect(&:to_i)
   end
 
   def sum
     @numbers.sum
+  end
+
+  def regexp_for_input
+    Regexp.union(@delimiters)
   end
 end
 
@@ -47,6 +52,12 @@ describe 'KataCalculator' do
     it "should return the sum with 2 or more numbers" do
       expect(@calculator.add('3,2')).to eql(5)
       expect(@calculator.add('1,2,3,4,5')).to eql(15)
+    end
+
+    # Test to handle newlines between numbers
+    it "should work with the '\\n' delimiter" do
+      expect(@calculator.add("3\n2")).to eql(5)
+      expect(@calculator.add("1,2\n3")).to eql(6)
     end
   end
 end
