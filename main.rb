@@ -1,8 +1,13 @@
 require 'byebug'
 class KataCalculator
 
+  # CUSTOM_DELIMITER_REGEXP = Regexp.new("\/\/(\\D)\\n")
+  # CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\\[(.*?)\\]")
+  # MULTIPLE_DELIMITERS_REGEXP = Regexp.new("\/\/(\\[.*\\])\\n")
+
   CUSTOM_DELIMITER_REGEXP = Regexp.new("\/\/(\\D)\\n")
-  CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\\[(.*?)\\]")
+  CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\/\/\\[(([^\\]|\\D])+)\\]\\n")
+  MULTIPLE_DELIMITERS_REGEXP = Regexp.new("\/\/(\\[.*\\])\\n")
     
   def add(input)
     return 0 if input == ''
@@ -35,6 +40,11 @@ class KataCalculator
   def find_delimiters
     if matches = (@input.match(CUSTOM_DELIMITER_REGEXP) || @input.match(CUSTOM_LONG_DELIMITER_REGEXP))
       @delimiters << matches[1]
+    elsif matches = @input.match(MULTIPLE_DELIMITERS_REGEXP)
+      delimiters = matches[1]
+      delimiters.split(']').each do |delimiter|
+        @delimiters << delimiter.delete('[')
+      end
     end
   end
 
@@ -106,6 +116,11 @@ describe 'KataCalculator' do
     # Test to check sum with delimiters of any length
     it "should allow delimiters with any length" do
       expect(@calculator.add("//[***]\n1***2***3")).to eql(6)
+    end
+
+    # Test to check multiple delimiters
+    it "should allow multiple custom delimiters" do
+      expect(@calculator.add("//[*][%]\n1*2%3")).to eql(6)
     end
   end
 end
