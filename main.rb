@@ -1,10 +1,6 @@
 require 'byebug'
 class KataCalculator
 
-  # CUSTOM_DELIMITER_REGEXP = Regexp.new("\/\/(\\D)\\n")
-  # CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\\[(.*?)\\]")
-  # MULTIPLE_DELIMITERS_REGEXP = Regexp.new("\/\/(\\[.*\\])\\n")
-
   CUSTOM_DELIMITER_REGEXP = Regexp.new("\/\/(\\D)\\n")
   CUSTOM_LONG_DELIMITER_REGEXP = Regexp.new("\/\/\\[(([^\\]|\\D])+)\\]\\n")
   MULTIPLE_DELIMITERS_REGEXP = Regexp.new("\/\/(\\[.*\\])\\n")
