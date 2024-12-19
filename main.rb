@@ -11,6 +11,7 @@ class KataCalculator
 
   private
   def parse_input
+    find_delimiters
     get_number_array
   end
 
@@ -24,6 +25,13 @@ class KataCalculator
 
   def regexp_for_input
     Regexp.union(@delimiters)
+  end
+
+  def find_delimiters
+    if @input.start_with?("//")
+      matchers = @input[2..].split("\n", 2)
+      @delimiters << matchers[0] unless matchers.nil?
+    end
   end
 end
 
@@ -58,6 +66,13 @@ describe 'KataCalculator' do
     it "should work with the '\\n' delimiter" do
       expect(@calculator.add("3\n2")).to eql(5)
       expect(@calculator.add("1,2\n3")).to eql(6)
+    end
+
+    # Test to support custom delimiters
+    it "should allow a different delimiter" do
+      expect(@calculator.add("//;\n3;2")).to eql(5)
+      expect(@calculator.add("//;\n1,2;3")).to eql(6)
+      expect(@calculator.add("//;\n1,2;3,5")).to eql(11)
     end
   end
 end
