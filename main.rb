@@ -122,5 +122,10 @@ describe 'KataCalculator' do
     it "should allow multiple custom delimiters" do
       expect(@calculator.add("//[*][%]\n1*2%3")).to eql(6)
     end
+
+    # Test multiple custom delimiters with length longer than one char
+    it "should allow multiple custom delimiters with length longer than one char" do
+      expect(@calculator.add("//[***][%%%%%]\n1***2%%%%%3")).to eql(6)
+    end
   end
 end
